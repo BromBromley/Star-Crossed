@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class MainMenuManager : MonoBehaviour
 {
@@ -29,6 +30,13 @@ public class MainMenuManager : MonoBehaviour
         mainScreen.SetActive(true);
     }
 
+    // called by the 'start' button
+    public void StartGame()
+    {
+        // SceneManager.LoadScene("Mainscene", LoadSceneMode.Single);
+    }
+
+    // called by the 'exit game' button
     public void ExitGame()
     {
         Application.Quit();
