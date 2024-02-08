@@ -10,7 +10,7 @@ public class PlayerMovement : MonoBehaviour
     private float movement;
     private float lastMovement;
     //private float speed = 0;
-    private float maxSpeed = 3f;
+    private float maxSpeed = 10f;
     private float acceleration;
     private float stoppingForce;
 
