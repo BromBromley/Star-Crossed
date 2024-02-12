@@ -1,4 +1,4 @@
-# Star-crossed
+# Star-Crossed
 
 This is a prototype of a 2D sidescroller horror game set in space.
 
