@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Numerics;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
@@ -7,12 +8,13 @@ public class PlayerMovement : MonoBehaviour
     // this script manages the input for the player movement
 
     private Rigidbody rb;
+    private UnityEngine.Vector3 movementDirection;
     private float movement;
-    private float lastMovement;
-    //private float speed = 0;
-    private float maxSpeed = 10f;
-    private float acceleration;
-    private float stoppingForce;
+    private UnityEngine.Vector3 lastMovement;
+    private float speed = 0;
+    private float maxSpeed = 14f;
+    private float acceleration = 14f;
+    private float stoppingForce = 18f;
 
     public bool playerIsFloating;
 
@@ -24,26 +26,25 @@ public class PlayerMovement : MonoBehaviour
     private void Update()
     {
         movement = Input.GetAxis("Horizontal");
+        Debug.Log(speed);
     }
 
     private void FixedUpdate()
     {
         if (movement > 0.0f || movement < 0.0f)
         {
-            MovePlayer();
+            Accelerate();
+        }
+        else
+        {
+            Decelerate();
         }
     }
 
-    private void MovePlayer()
-    {
-        //Debug.Log("moving");
-        rb.velocity = new Vector3(movement * maxSpeed, 0, 0);
-    }
-
-    /*
     // this gives the movement a fade in
     private void Accelerate()
     {
+        //Debug.Log("moving");
         if (speed < maxSpeed)
         {
             speed += acceleration * Time.deltaTime;
@@ -55,9 +56,10 @@ public class PlayerMovement : MonoBehaviour
 
         speed = Mathf.Clamp(speed, 0, maxSpeed);
 
-        rb.velocity = new Vector3(movement * speed, 0, 0);
+        movementDirection = new UnityEngine.Vector3(movement, 0, 0);
+        lastMovement = movementDirection;
 
-        lastMovement = movement;
+        rb.MovePosition(rb.position + (movementDirection * speed) * Time.deltaTime);
     }
 
     // this gives the movement a fade out
@@ -65,13 +67,11 @@ public class PlayerMovement : MonoBehaviour
     {
         speed -= stoppingForce * Time.deltaTime;
 
-        rb.velocity = new Vector3(lastMovement * speed, 0, 0);
+        rb.MovePosition(rb.position + (lastMovement * speed) * Time.deltaTime);
 
         if (speed <= 0.0f)
         {
             speed = 0.0f;
-            lastMovement = 0;
         }
     }
-    */
 }
