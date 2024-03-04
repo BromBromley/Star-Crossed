@@ -7,8 +7,8 @@ public class CameraManager : MonoBehaviour
     // this script checks which camera point the camera should teleport to
 
     [SerializeField] private GameObject player;
-    private List<GameObject> cameraPoints;
 
+    private List<GameObject> cameraPoints;
     private float distancePlayerPoint;
     private float distancePlayerClosest;
     private Vector3 closestPoint;
@@ -16,11 +16,11 @@ public class CameraManager : MonoBehaviour
     private void Start()
     {
         cameraPoints = new List<GameObject>(GameObject.FindGameObjectsWithTag("Camera Point"));
-        //PlayerInteractions.onUsingDoor += MoveCamera;
         PlayerInteractions.onUsingDoor += MoveCameraWithDelay;
     }
 
     // this checks which camera point is closest to the player and transports the camera there
+    // delete if not needed
     private void MoveCamera()
     {
         foreach (GameObject point in cameraPoints)
@@ -40,6 +40,7 @@ public class CameraManager : MonoBehaviour
         StartCoroutine(CameraDelay());
     }
 
+    // delays the camera check to match the player teleportation and fade to black
     private IEnumerator CameraDelay()
     {
         yield return new WaitForSeconds(0.3f);

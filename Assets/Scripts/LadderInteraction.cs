@@ -14,6 +14,7 @@ public class LadderInteraction : MonoBehaviour
         StartCoroutine(TeleportDelay(player));
     }
 
+    // delays the teleport of the player to match the fade to black
     private IEnumerator TeleportDelay(GameObject player)
     {
         yield return new WaitForSeconds(0.3f);

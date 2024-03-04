@@ -16,7 +16,7 @@ public class AudioManager : MonoBehaviour
 
     public float musicVolume;
     public float sfxVolume;
-    private float fadeDuration = 10f;
+    // private float fadeDuration = 10f;
 
     void Start()
     {

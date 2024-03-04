@@ -24,6 +24,7 @@ public class UIManager : MonoBehaviour
         StartCoroutine(FadeOutAndIn());
     }
 
+    // fades the screen to black by changing the color of the fade screen
     private IEnumerator FadeOutAndIn()
     {
         fadeTime = 0f;

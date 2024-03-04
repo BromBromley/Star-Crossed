@@ -8,6 +8,7 @@ public class PlayerInteractions : MonoBehaviour
     // this script manages the interactions with doors and items
 
     [SerializeField] private GameObject interactIcon;
+
     private bool canEnterDoor = true;
     public delegate void OnUsingDoor();
     public static event OnUsingDoor onUsingDoor;
@@ -18,8 +19,10 @@ public class PlayerInteractions : MonoBehaviour
         interactIcon.SetActive(false);
     }
 
+    // checks if the player is standing in front of and interacting with an object
     private void OnTriggerStay(Collider other)
     {
+        // shows the interaction button
         interactIcon.SetActive(true);
         //interactIcon.transform.position += new Vector3(this.transform.position.x, 0, 0); //< -good idea, but doesn't work as hoped
 
@@ -38,11 +41,13 @@ public class PlayerInteractions : MonoBehaviour
         }
     }
 
+    // hides the interaction button
     private void OnTriggerExit(Collider other)
     {
         interactIcon.SetActive(false);
     }
 
+    // automatically teleports the player if they walk through a door
     private void OnCollisionStay(Collision other)
     {
         if (other.gameObject.tag == "Door" && canEnterDoor)
