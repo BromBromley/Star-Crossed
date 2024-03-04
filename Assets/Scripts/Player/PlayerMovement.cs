@@ -7,20 +7,26 @@ public class PlayerMovement : MonoBehaviour
 {
     // this script manages the input for the player movement
 
+    private Rigidbody rb;
     private UnityEngine.Vector3 movementDirection;
     private float movement;
     private UnityEngine.Vector3 lastMovement;
     private float speed = 0;
     private float maxSpeed = 14f;
-    private float acceleration = 14f;
+    private float acceleration = 16f;
     private float stoppingForce = 18f;
 
-    // public bool playerIsFloating;
+    public bool playerIsFloating;
+
+    private void Start()
+    {
+        rb = GetComponent<Rigidbody>();
+    }
 
     private void Update()
     {
         movement = Input.GetAxis("Horizontal");
-        Debug.Log(speed);
+        //Debug.Log(speed);
     }
 
     private void FixedUpdate()
@@ -38,7 +44,6 @@ public class PlayerMovement : MonoBehaviour
     // this gives the movement a fade in
     private void Accelerate()
     {
-        //Debug.Log("moving");
         if (speed < maxSpeed)
         {
             speed += acceleration * Time.deltaTime;
@@ -53,7 +58,7 @@ public class PlayerMovement : MonoBehaviour
         movementDirection = new UnityEngine.Vector3(movement, 0, 0);
         lastMovement = movementDirection;
 
-        transform.position += new UnityEngine.Vector3(movement, 0, 0) * speed * Time.deltaTime;
+        rb.velocity = new UnityEngine.Vector3(movement * speed, 0, 0);
     }
 
     // this gives the movement a fade out
@@ -61,7 +66,7 @@ public class PlayerMovement : MonoBehaviour
     {
         speed -= stoppingForce * Time.deltaTime;
 
-        transform.position += lastMovement * speed * Time.deltaTime;
+        rb.velocity = lastMovement * speed;
 
         if (speed <= 0.0f)
         {
