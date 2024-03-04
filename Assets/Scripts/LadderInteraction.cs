@@ -11,6 +11,12 @@ public class LadderInteraction : MonoBehaviour
 
     public void UsingLadder(GameObject player)
     {
+        StartCoroutine(TeleportDelay(player));
+    }
+
+    private IEnumerator TeleportDelay(GameObject player)
+    {
+        yield return new WaitForSeconds(0.3f);
         if (goingUp)
         {
             player.transform.position += new Vector3(0, 100f, 0);

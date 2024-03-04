@@ -21,7 +21,7 @@ public class PlayerInteractions : MonoBehaviour
     private void OnTriggerStay(Collider other)
     {
         interactIcon.SetActive(true);
-        //interactIcon.transform.position += new Vector3(this.transform.position.x, 0, 0); <- good idea, but doesn't work as hoped
+        //interactIcon.transform.position += new Vector3(this.transform.position.x, 0, 0); //< -good idea, but doesn't work as hoped
 
         if (other.tag == "Door" && canEnterDoor && Input.GetKey(KeyCode.E))
         {

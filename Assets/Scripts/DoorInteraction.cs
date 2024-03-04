@@ -12,6 +12,12 @@ public class DoorInteraction : MonoBehaviour
     public void EnteringDoor(GameObject player)
     {
         Debug.Log("entering room");
+        StartCoroutine(TeleportDelay(player));
+    }
+
+    private IEnumerator TeleportDelay(GameObject player)
+    {
+        yield return new WaitForSeconds(0.3f);
         if (goingLeft)
         {
             player.transform.position += new Vector3(-60f, 0, 0);

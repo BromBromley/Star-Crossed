@@ -16,12 +16,34 @@ public class CameraManager : MonoBehaviour
     private void Start()
     {
         cameraPoints = new List<GameObject>(GameObject.FindGameObjectsWithTag("Camera Point"));
-        PlayerInteractions.onUsingDoor += MoveCamera;
+        //PlayerInteractions.onUsingDoor += MoveCamera;
+        PlayerInteractions.onUsingDoor += MoveCameraWithDelay;
     }
 
     // this checks which camera point is closest to the player and transports the camera there
     private void MoveCamera()
     {
+        foreach (GameObject point in cameraPoints)
+        {
+            distancePlayerPoint = Vector3.Distance(player.transform.position, point.transform.position);
+            distancePlayerClosest = Vector3.Distance(player.transform.position, closestPoint);
+            if (distancePlayerPoint < distancePlayerClosest)
+            {
+                closestPoint = point.transform.position;
+            }
+        }
+        this.gameObject.transform.position = closestPoint;
+    }
+
+    private void MoveCameraWithDelay()
+    {
+        StartCoroutine(CameraDelay());
+    }
+
+    private IEnumerator CameraDelay()
+    {
+        yield return new WaitForSeconds(0.3f);
+
         foreach (GameObject point in cameraPoints)
         {
             distancePlayerPoint = Vector3.Distance(player.transform.position, point.transform.position);
