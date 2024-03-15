@@ -14,6 +14,9 @@ public class PlayerInteractions : MonoBehaviour
     public static event OnUsingDoor onUsingDoor;
     // 'event' prevents the delegate from being called by a different script, leave out if necessary
 
+    public delegate void OnInteraction();
+    public static event OnInteraction onInteraction;
+
     void Start()
     {
         interactIcon.SetActive(false);
@@ -38,6 +41,13 @@ public class PlayerInteractions : MonoBehaviour
             other.GetComponent<LadderInteraction>().UsingLadder(this.gameObject);
             onUsingDoor?.Invoke();
             StartCoroutine(DoorCooldown());
+        }
+
+        if (other.tag == "Interactable" && Input.GetKeyDown(KeyCode.E))
+        {
+            other.GetComponent<Interactable>().thisInteractable = true;
+            onInteraction?.Invoke();
+            Debug.Log("interacting");
         }
     }
 
