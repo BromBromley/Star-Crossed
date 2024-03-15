@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Numerics;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -16,6 +17,24 @@ public class PlayerMovement : MonoBehaviour
     private float stoppingForce = 18f;
 
     // public bool playerIsFloating;
+    private PlayerInputActions playerControls;
+    private InputAction moveAction;
+
+    private void Awake()
+    {
+        playerControls = new PlayerInputActions();
+    }
+
+    private void OnEnable()
+    {
+        moveAction = playerControls.Player.Move;
+        moveAction.Enable();
+    }
+
+    private void OnDisable()
+    {
+        moveAction.Disable();
+    }
 
     private void Start()
     {
@@ -24,7 +43,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
-        movement = Input.GetAxis("Horizontal");
+        movement = moveAction.ReadValue<UnityEngine.Vector2>().x;
     }
 
     private void FixedUpdate()

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerInteractions : MonoBehaviour
 {
@@ -9,6 +10,7 @@ public class PlayerInteractions : MonoBehaviour
 
     [SerializeField] private GameObject interactIcon;
 
+    private bool isInteracting;
     private bool canEnterDoor = true;
     public delegate void OnUsingDoor();
     public static event OnUsingDoor onUsingDoor;
@@ -17,9 +19,28 @@ public class PlayerInteractions : MonoBehaviour
     public delegate void OnInteraction();
     public static event OnInteraction onInteraction;
 
-    void Start()
+    private PlayerInputActions playerControls;
+    private InputAction interaction;
+
+    [SerializeField] private bool showLogs;
+
+
+    private void Awake()
     {
+        playerControls = new PlayerInputActions();
         interactIcon.SetActive(false);
+    }
+
+    private void OnEnable()
+    {
+        interaction = playerControls.Player.Interact;
+        interaction.Enable();
+        interaction.performed += Interact;
+    }
+
+    private void OnDisable()
+    {
+        interaction.Disable();
     }
 
     // checks if the player is standing in front of and interacting with an object
@@ -29,25 +50,31 @@ public class PlayerInteractions : MonoBehaviour
         interactIcon.SetActive(true);
         //interactIcon.transform.position += new Vector3(this.transform.position.x, 0, 0); //< -good idea, but doesn't work as hoped
 
-        if (other.tag == "Door" && canEnterDoor && Input.GetKey(KeyCode.E))
+        if (isInteracting)
         {
-            other.GetComponent<DoorInteraction>().EnteringDoor(this.gameObject);
-            onUsingDoor?.Invoke();
-            StartCoroutine(DoorCooldown());
-        }
+            if (other.tag == "Door" && canEnterDoor)
+            {
+                other.GetComponent<DoorInteraction>().EnteringDoor(this.gameObject);
+                onUsingDoor?.Invoke();
+                StartCoroutine(DoorCooldown());
+                Log("using door");
+            }
 
-        if (other.tag == "Ladder" && canEnterDoor && Input.GetKey(KeyCode.E))
-        {
-            other.GetComponent<LadderInteraction>().UsingLadder(this.gameObject);
-            onUsingDoor?.Invoke();
-            StartCoroutine(DoorCooldown());
-        }
+            if (other.tag == "Ladder" && canEnterDoor)
+            {
+                other.GetComponent<LadderInteraction>().UsingLadder(this.gameObject);
+                onUsingDoor?.Invoke();
+                StartCoroutine(DoorCooldown());
+                Log("using ladder");
+            }
 
-        if (other.tag == "Interactable" && Input.GetKeyDown(KeyCode.E))
-        {
-            other.GetComponent<Interactable>().thisInteractable = true;
-            onInteraction?.Invoke();
-            Debug.Log("interacting");
+            if (other.tag == "Interactable")
+            {
+                other.GetComponent<Interactable>().thisInteractable = true;
+                onInteraction?.Invoke();
+                Log("interacting");
+            }
+            isInteracting = false;
         }
     }
 
@@ -65,7 +92,13 @@ public class PlayerInteractions : MonoBehaviour
             other.gameObject.GetComponent<DoorInteraction>().EnteringDoor(this.gameObject);
             onUsingDoor?.Invoke();
             StartCoroutine(DoorCooldown());
+            Log("using door");
         }
+    }
+
+    private void Interact(InputAction.CallbackContext context)
+    {
+        isInteracting = true;
     }
 
     // this prevents accidentally spamming through doors
@@ -74,5 +107,14 @@ public class PlayerInteractions : MonoBehaviour
         canEnterDoor = false;
         yield return new WaitForSeconds(1);
         canEnterDoor = true;
+    }
+
+    // checks if logs should be send to the console
+    private void Log(string message)
+    {
+        if (showLogs)
+        {
+            Debug.Log(message);
+        }
     }
 }
