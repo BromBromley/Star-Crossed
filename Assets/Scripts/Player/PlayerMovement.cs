@@ -8,6 +8,7 @@ public class PlayerMovement : MonoBehaviour
 {
     // this script manages the input for the player movement
 
+    private bool playerCanMove = true;
     private Rigidbody rb;
     private float movement;
     private UnityEngine.Vector3 lastMovement;
@@ -39,11 +40,21 @@ public class PlayerMovement : MonoBehaviour
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
+        PlayerInteractions.onInteraction += SwitchMovementBool;
+        PlayerInteractions.onUsingDoor += PausePlayerMovement;
+        GameManager.onContinuingGame += SwitchMovementBool;
     }
 
     private void Update()
     {
-        movement = moveAction.ReadValue<UnityEngine.Vector2>().x;
+        if (playerCanMove)
+        {
+            movement = moveAction.ReadValue<UnityEngine.Vector2>().x;
+        }
+        else
+        {
+            movement = 0f;
+        }
     }
 
     private void FixedUpdate()
@@ -89,5 +100,24 @@ public class PlayerMovement : MonoBehaviour
             speed = 0.0f;
             lastMovement = UnityEngine.Vector3.zero;
         }
+    }
+
+    // changes the state of the bool to match the interactions
+    private void SwitchMovementBool()
+    {
+        playerCanMove = !playerCanMove;
+    }
+
+    // this disables the player movement for a short period while going through doors
+    private void PausePlayerMovement()
+    {
+        StartCoroutine(PausingPlayerMovement());
+    }
+
+    private IEnumerator PausingPlayerMovement()
+    {
+        playerCanMove = false;
+        yield return new WaitForSeconds(0.5f);
+        playerCanMove = true;
     }
 }

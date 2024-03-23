@@ -8,7 +8,7 @@ public class InteractableManager : MonoBehaviour
     // this script manages all the interactables for the different tasks
 
     private List<GameObject> interactables;
-    private string taskName;
+    public string taskName;
 
     void Start()
     {
@@ -28,6 +28,16 @@ public class InteractableManager : MonoBehaviour
                 interaction.GetComponent<Interactable>().thisInteractable = false;
             }
         }
-        Debug.Log("You're interacting with " + taskName);
+        //Debug.Log("You're interacting with " + taskName);
+    }
+
+    private void ActivateInteractable()
+    {
+        // lock player movement
+
+        // open UI elements
+        // some sort of counter
+        // erase from UI task list
+        // deactivate interactable for the rest of the day
     }
 }

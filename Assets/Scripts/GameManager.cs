@@ -4,15 +4,15 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    //public delegate void OnPausingGame();
+    //public static event OnPausingGame onPausingGame;
 
-    // Update is called once per frame
-    void Update()
+    public delegate void OnContinuingGame();
+    public static event OnContinuingGame onContinuingGame;
+
+    public void UnpauseGame()
     {
-        
+        onContinuingGame?.Invoke();
+        Debug.Log("unpausing game");
     }
 }
