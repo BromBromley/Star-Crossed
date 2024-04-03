@@ -18,26 +18,20 @@ public class InteractableManager : MonoBehaviour
 
     // this goes through the list of interactables to check which one should be triggered
     // immediately sets the interaction bool to false once it has found the right one
-    private void CheckWhichInteractable()
+    private void CheckWhichInteractable(bool isTask)
     {
-        foreach (GameObject interaction in interactables)
+        if (!isTask)
         {
-            if (interaction.GetComponent<Interactable>().thisInteractable)
+            foreach (GameObject interaction in interactables)
             {
-                taskName = interaction.GetComponent<Interactable>().interactableName;
-                interaction.GetComponent<Interactable>().thisInteractable = false;
+                if (interaction.GetComponent<Interactable>().thisInteractable)
+                {
+                    taskName = interaction.GetComponent<Interactable>().interactableName;
+                    //taskName = interaction.name;
+                    interaction.GetComponent<Interactable>().thisInteractable = false;
+                }
             }
+            //Debug.Log("You're interacting with " + taskName);
         }
-        //Debug.Log("You're interacting with " + taskName);
-    }
-
-    private void ActivateInteractable()
-    {
-        // lock player movement
-
-        // open UI elements
-        // some sort of counter
-        // erase from UI task list
-        // deactivate interactable for the rest of the day
     }
 }

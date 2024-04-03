@@ -8,6 +8,7 @@ TagManager:
   - Door
   - Ladder
   - Interactable
+  - Task
   layers:
   - Default
   - TransparentFX

@@ -42,7 +42,7 @@ public class PlayerMovement : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         PlayerInteractions.onInteraction += SwitchMovementBool;
         PlayerInteractions.onUsingDoor += PausePlayerMovement;
-        GameManager.onContinuingGame += SwitchMovementBool;
+        GameManager.onContinuingGame += EnableMovement;
     }
 
     private void Update()
@@ -103,9 +103,14 @@ public class PlayerMovement : MonoBehaviour
     }
 
     // changes the state of the bool to match the interactions
-    private void SwitchMovementBool()
+    private void SwitchMovementBool(bool isTask)
     {
         playerCanMove = !playerCanMove;
+    }
+
+    private void EnableMovement()
+    {
+        playerCanMove = true;
     }
 
     // this disables the player movement for a short period while going through doors

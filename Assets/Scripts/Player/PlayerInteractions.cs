@@ -16,7 +16,7 @@ public class PlayerInteractions : MonoBehaviour
     public static event OnUsingDoor onUsingDoor;
     // 'event' prevents the delegate from being called by a different script, leave out if necessary
 
-    public delegate void OnInteraction();
+    public delegate void OnInteraction(bool isTask);
     public static event OnInteraction onInteraction;
 
     private PlayerInputActions playerControls;
@@ -68,10 +68,17 @@ public class PlayerInteractions : MonoBehaviour
                 Log("using ladder");
             }
 
-            if (other.tag == "Interactable")
+            if (other.tag == "Interactable" || other.tag == "Task")
             {
                 other.GetComponent<Interactable>().thisInteractable = true;
-                onInteraction?.Invoke();
+                if (other.tag == "Task")
+                {
+                    onInteraction?.Invoke(true);
+                }
+                else
+                {
+                    onInteraction?.Invoke(false);
+                }
                 Log("interacting");
             }
             isInteracting = false;
