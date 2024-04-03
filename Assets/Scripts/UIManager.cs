@@ -17,6 +17,7 @@ public class UIManager : MonoBehaviour
     string[] taskDescription = new string[6];
 
     [SerializeField] private GameObject textbox;
+    [SerializeField] private GameObject dayCounter;
     private InteractableManager _interactableManager;
 
     void Start()
@@ -30,6 +31,7 @@ public class UIManager : MonoBehaviour
         _interactableManager = FindObjectOfType<InteractableManager>();
 
         GameManager.onContinuingGame += HideTextbox;
+        GameManager.onNewDay += UpdateDay;
 
         TaskManager.onStartingTask += ShowTaskText;
 
@@ -107,5 +109,10 @@ public class UIManager : MonoBehaviour
         TaskManager.onCompletingTask?.Invoke();
         textbox.GetComponentInChildren<Button>().onClick.RemoveListener(EndTask);
         textbox.GetComponentInChildren<Button>().GetComponentInChildren<TextMeshProUGUI>().text = "Yay!";
+    }
+
+    private void UpdateDay(int day)
+    {
+        dayCounter.GetComponent<TextMeshProUGUI>().text = "Day 0" + (day + 1);
     }
 }
