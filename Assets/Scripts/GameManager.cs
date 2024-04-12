@@ -9,7 +9,7 @@ public class GameManager : MonoBehaviour
     //public static event OnPausingGame onPausingGame;
 
     public delegate void OnContinuingGame();
-    public static event OnContinuingGame onContinuingGame;
+    public static OnContinuingGame onContinuingGame;
 
     public delegate void OnNewDay(int day);
     public static event OnNewDay onNewDay;

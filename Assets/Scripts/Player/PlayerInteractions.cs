@@ -44,11 +44,11 @@ public class PlayerInteractions : MonoBehaviour
     }
 
     // checks if the player is standing in front of and interacting with an object
+    // maybe change to OnTriggerEnter in order to fix weird bug?
     private void OnTriggerStay(Collider other)
     {
         // shows the interaction button
         interactIcon.SetActive(true);
-        //interactIcon.transform.position += new Vector3(this.transform.position.x, 0, 0); //< -good idea, but doesn't work as hoped
 
         if (isInteracting)
         {
@@ -71,14 +71,13 @@ public class PlayerInteractions : MonoBehaviour
             if (other.tag == "Interactable" || other.tag == "Task")
             {
                 other.GetComponent<Interactable>().thisInteractable = true;
-                if (other.tag == "Task")
-                {
-                    onInteraction?.Invoke(true);
-                }
-                else
-                {
-                    onInteraction?.Invoke(false);
-                }
+                onInteraction?.Invoke(true);
+                Log("interacting with task");
+            }
+            if (other.tag == "Interactable")
+            {
+                other.GetComponent<Interactable>().thisInteractable = true;
+                onInteraction?.Invoke(false);
                 Log("interacting");
             }
             isInteracting = false;
@@ -89,6 +88,7 @@ public class PlayerInteractions : MonoBehaviour
     private void OnTriggerExit(Collider other)
     {
         interactIcon.SetActive(false);
+        isInteracting = false;
     }
 
     // automatically teleports the player if they walk through a door

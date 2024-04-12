@@ -13,12 +13,13 @@ public class UIManager : MonoBehaviour
     private Color transparentColor;
     private float fadeTime;
     private float speed = 3f;
-    //private string taskDescription;
     string[] taskDescription = new string[6];
 
     [SerializeField] private GameObject textbox;
     [SerializeField] private GameObject dayCounter;
+    [SerializeField] private GameObject taskButton;
     private InteractableManager _interactableManager;
+    private APManager _apManager;
 
     void Start()
     {
@@ -28,7 +29,11 @@ public class UIManager : MonoBehaviour
         textbox.SetActive(false);
         PlayerInteractions.onInteraction += ShowTextbox;
 
+        taskButton.GetComponentInChildren<Button>().onClick.AddListener(EndTask);
+        taskButton.SetActive(false);
+
         _interactableManager = FindObjectOfType<InteractableManager>();
+        _apManager = FindObjectOfType<APManager>();
 
         GameManager.onContinuingGame += HideTextbox;
         GameManager.onNewDay += UpdateDay;
@@ -83,6 +88,7 @@ public class UIManager : MonoBehaviour
         textbox.SetActive(true);
         if (!isTask)
         {
+            taskButton.SetActive(false);
             textbox.GetComponentInChildren<TextMeshProUGUI>().text = "You're interacting with " + _interactableManager.taskName;
         }
         else
@@ -94,23 +100,29 @@ public class UIManager : MonoBehaviour
     private void HideTextbox()
     {
         textbox.SetActive(false);
-        Debug.Log("hiding textbox");
     }
 
     private void ShowTaskText(int task)
     {
         textbox.GetComponentInChildren<TextMeshProUGUI>().text = "You're interacting with " + taskDescription[task] + ". Come back later to play the minigame.";
-        textbox.GetComponentInChildren<Button>().onClick.AddListener(EndTask);
-        textbox.GetComponentInChildren<Button>().GetComponentInChildren<TextMeshProUGUI>().text = "Complete task";
+        taskButton.SetActive(true);
     }
 
     private void EndTask()
     {
-        TaskManager.onCompletingTask?.Invoke();
-        textbox.GetComponentInChildren<Button>().onClick.RemoveListener(EndTask);
-        textbox.GetComponentInChildren<Button>().GetComponentInChildren<TextMeshProUGUI>().text = "Yay!";
+        taskButton.SetActive(false);
+        if (_apManager.AP > 0)
+        {
+            TaskManager.onCompletingTask?.Invoke();
+            textbox.GetComponentInChildren<TextMeshProUGUI>().text = "You've completed the task. Yippie!";
+        }
+        else
+        {
+            textbox.GetComponentInChildren<TextMeshProUGUI>().text = "You don't have enough AP for that right now. Go to bed.";
+        }
     }
 
+    // this updates the HUD's day counter
     private void UpdateDay(int day)
     {
         dayCounter.GetComponent<TextMeshProUGUI>().text = "Day 0" + (day + 1);

@@ -152,7 +152,6 @@ public class TaskManager : MonoBehaviour
                     taskIndex = task.GetComponent<Interactable>().taskNumber;
                 }
             }
-            //Log("You're interacting with " + currentTask.name);
             onStartingTask?.Invoke(taskIndex);
         }
     }
