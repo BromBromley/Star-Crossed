@@ -9,6 +9,9 @@ TagManager:
   - Ladder
   - Interactable
   - Task
+  - Damage
+  - Dirt
+  - Patch
   layers:
   - Default
   - TransparentFX
