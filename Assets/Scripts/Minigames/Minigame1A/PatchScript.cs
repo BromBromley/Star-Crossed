@@ -9,6 +9,7 @@ public class PatchScript : MonoBehaviour
     // it is attached to each damage and checks if the dirt covering the spots for patches are cleaned before they can be placed 
 
     [SerializeField] private GameObject dirt;
+    public bool patchFallsOff;
     
     public void CheckIfCleaned()
     {

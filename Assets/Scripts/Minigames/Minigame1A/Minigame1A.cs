@@ -9,8 +9,13 @@ public class Minigame1A : MonoBehaviour
 {
     // this script manages the minigame "fixing the spacesuit"
 
-    [SerializeField] private GameObject top_01;
-    [SerializeField] private GameObject bottom_01;
+    private int levelCounter;
+    [SerializeField] private GameObject nextLevelButton;
+    [SerializeField] private GameObject level01;
+    [SerializeField] private GameObject level02;
+    private List<GameObject> dirtList = new List<GameObject>();
+    private List<GameObject> damageList = new List<GameObject>();
+    private List<GameObject> patchList = new List<GameObject>();
 
     [SerializeField] private GameObject img_cleaner;
     private bool showingCleaner;
@@ -23,16 +28,18 @@ public class Minigame1A : MonoBehaviour
 
     private GameObject currentTool;
 
-    private List<GameObject> dirtList;
-    private List<GameObject> damageList;
-    private List<GameObject> patchList;
-
     private EventSystem _eventSystem;
     private GraphicRaycaster _raycaster;
     private PointerEventData _pointerEventData;
     
     private Color pink = new Color32(239, 60, 228, 255);
     private Color blue = new Color32(91, 104, 199, 255);
+    private Color transparentColor = new Color32(255, 255, 255, 0);
+
+    [SerializeField] private GameObject[] bitemarks = new GameObject[3];
+    [SerializeField] private GameObject[] bitePatches = new GameObject[3];
+    private int bitemarkIndex;
+    private bool finishedSecondRound;
 
 
     private void OnEnable()
@@ -43,13 +50,8 @@ public class Minigame1A : MonoBehaviour
     void Start()
     {
         _raycaster = GameObject.Find("[Minigames]").GetComponent<GraphicRaycaster>();
-
-        top_01.SetActive(true);
-        bottom_01.SetActive(true);
-        dirtList = new List<GameObject>(GameObject.FindGameObjectsWithTag("Dirt"));
-        damageList = new List<GameObject>(GameObject.FindGameObjectsWithTag("Damage"));
-        patchList = new List<GameObject>(GameObject.FindGameObjectsWithTag("Patch"));
-        bottom_01.SetActive(false);
+        nextLevelButton.SetActive(false);
+        SetUpRightLevel();
     }
 
     void Update()
@@ -137,6 +139,87 @@ public class Minigame1A : MonoBehaviour
         }
     }
 
+    private void SetUpRightLevel()
+    {
+        if (levelCounter == 0)
+        {
+            SetUpRoundOne();
+        }
+        else 
+        {
+            SetUpRoundTwo();
+        }
+    }
+
+    // this turns on the elements for level 1 and assigns them to the lists
+    // called in Start()
+    private void SetUpRoundOne()
+    {
+        level02.transform.GetChild(0).gameObject.SetActive(false);
+        level02.transform.GetChild(1).gameObject.SetActive(false);
+        level02.SetActive(false);
+        level01.SetActive(true);
+        level01.transform.GetChild(0).gameObject.SetActive(true);
+        level01.transform.GetChild(1).gameObject.SetActive(true);
+        for (int j = 0; j < level01.transform.childCount; j++)
+        {
+            for (int i = 0; i < level01.transform.GetChild(j).transform.childCount; i++)
+            {
+                if (level01.transform.GetChild(j).transform.GetChild(i).tag == "Dirt")
+                {   
+                    dirtList.Add(level01.transform.GetChild(j).transform.GetChild(i).gameObject);
+                }
+                if (level01.transform.GetChild(j).transform.GetChild(i).tag == "Damage")
+                {
+                    damageList.Add(level01.transform.GetChild(j).transform.GetChild(i).gameObject);
+                }
+                if (level01.transform.GetChild(j).transform.GetChild(i).tag == "Patch")
+                {
+                    patchList.Add(level01.transform.GetChild(j).transform.GetChild(i).gameObject);
+                }
+            }
+        }
+        level01.transform.GetChild(1).gameObject.SetActive(false);
+    }
+    // this turns on the elements for level 2 and assigns them to the lists
+    public void SetUpRoundTwo()
+    {
+        levelCounter++;
+        level01.transform.GetChild(0).gameObject.SetActive(false);
+        level01.transform.GetChild(1).gameObject.SetActive(false);
+        level01.SetActive(false);
+        level02.SetActive(true);
+        level02.transform.GetChild(0).gameObject.SetActive(true);
+        level02.transform.GetChild(1).gameObject.SetActive(true);
+        for (int j = 0; j < level02.transform.childCount; j++)
+        {
+            for (int i = 0; i < level02.transform.GetChild(j).transform.childCount; i++)
+            {
+                if (level02.transform.GetChild(j).transform.GetChild(i).tag == "Dirt")
+                {
+                    dirtList.Add(level02.transform.GetChild(j).transform.GetChild(i).gameObject);
+                }
+                if (level02.transform.GetChild(j).transform.GetChild(i).tag == "Damage")
+                {
+                    damageList.Add(level02.transform.GetChild(j).transform.GetChild(i).gameObject);
+                }
+                if (level02.transform.GetChild(j).transform.GetChild(i).tag == "Patch")
+                {
+                    patchList.Add(level02.transform.GetChild(j).transform.GetChild(i).gameObject);
+                }
+            }
+        }
+        damageList.Remove(bitemarks[1].gameObject);
+        damageList.Remove(bitemarks[2].gameObject);
+        bitemarks[1].SetActive(false);
+        bitemarks[2].SetActive(false);
+        patchList.Remove(bitePatches[1].gameObject);
+        patchList.Remove(bitePatches[2].gameObject);
+        bitePatches[1].SetActive(false);
+        bitePatches[2].SetActive(false);
+        level02.transform.GetChild(1).gameObject.SetActive(false);
+    }
+
 
     // this fades the color of the dirt while it gets cleaned
     private void CleanDirt(GameObject dirt)
@@ -174,6 +257,41 @@ public class Minigame1A : MonoBehaviour
         patchList.Remove(patch);
         ToggleTool("patch");
         CheckIfDone();
+
+        if (patch.GetComponent<PatchScript>().patchFallsOff)
+        {
+            StartCoroutine(RemovePatch(patch));
+        }
+    }
+
+
+    // this removes the patches from the bitemarks during level 2
+    private IEnumerator RemovePatch(GameObject patch)
+    {
+        yield return new WaitForSeconds(3);
+
+        bitemarks[bitemarkIndex].gameObject.SetActive(false);
+        bitemarkIndex++;
+        bitemarks[bitemarkIndex].gameObject.SetActive(true);
+        damageList.Add(bitemarks[bitemarkIndex].gameObject);
+        bitePatches[bitemarkIndex].gameObject.SetActive(true);
+        patchList.Add(bitePatches[bitemarkIndex].gameObject);
+
+        float fadeTime = 0f;
+        float speed = 5f;
+
+        while (patch.GetComponent<Image>().color.a > 0)
+        {
+            fadeTime += speed * Time.deltaTime;
+            patch.GetComponent<Image>().color = Color.Lerp(Color.white, transparentColor, fadeTime);
+            yield return null;
+        }
+        patch.SetActive(false);
+
+        if (bitemarkIndex == 2)
+        {
+            finishedSecondRound = true;
+        }
     }
 
 
@@ -252,9 +370,18 @@ public class Minigame1A : MonoBehaviour
     // the items of the list are removed after each step
     private void CheckIfDone()
     {
-        if (dirtList.Count == 0 && damageList.Count == 0 && patchList.Count == 0)
+        if (dirtList.Count == 0 && patchList.Count == 0)
         {
-            Debug.Log("You did it!");
+            if (levelCounter == 0)
+            {
+                Debug.Log("You did it!");
+                nextLevelButton.SetActive(true);
+            }
+            if (finishedSecondRound)
+            {
+                Debug.Log("You did it!");
+                // show 'back to menu' thing
+            }
         }
     }
 

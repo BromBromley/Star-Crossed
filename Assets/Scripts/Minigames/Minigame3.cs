@@ -7,8 +7,13 @@ public class Minigame3 : MonoBehaviour
 {
     // this script manages the minigame "checking the ship's system"
 
+    private int levelCounter;
     private int correctCounter;
     private static List<GameObject> greenButtons = new List<GameObject>();
+    [SerializeField] private GameObject blackReferenceScreen;
+    private bool isCheckNormal = true;
+    private bool computerReacts = true;
+    [SerializeField] private GameObject nextLevelButton;
 
     // variables for the first part
     [SerializeField] private GameObject curve;
@@ -16,30 +21,38 @@ public class Minigame3 : MonoBehaviour
     [SerializeField] private Button squashButton;
     [SerializeField] private Button stretchButton;
     [SerializeField] private GameObject curve_ref;
+    [SerializeField] private Button checkButton01;
 
     // variables for the second part
     [SerializeField] private GameObject[] squares = new GameObject[5];
-    private int amount;
+    private int amount = 2;
     [SerializeField] private Button minusButton;
     [SerializeField] private Button plusButton;
     [SerializeField] private GameObject[] squares_ref = new GameObject[5];
     private int amount_ref;
+    [SerializeField] private Button checkButton02;
 
     // variables for the third part
     [SerializeField] private Slider[] slider = new Slider[4];
-    [SerializeField] private GameObject[] buttons = new GameObject[4];
+    [SerializeField] private GameObject[] sliderButtons = new GameObject[4];
     public bool moveBar;
-    private float speed = 3f;
+    private float speed = 4f;
     private float sliderTime;
     private int sliderIndex;
     private bool showingStop;
     [SerializeField] private Slider[] slider_ref = new Slider[4];
 
+    // variables for resetting the console
+    private float prevStretchFactor;
+    private int prevAmount;
+    private float[] prevSliderValues = new float[4];
+
 
     void Start()
     {
-        TurnOffSquares();
-        // add all the green images overlaying the buttons
+        blackReferenceScreen.SetActive(false);
+        nextLevelButton.SetActive(false);
+        //TurnOffSquares();
     }
 
     void Update()
@@ -48,7 +61,6 @@ public class Minigame3 : MonoBehaviour
         {
             slider[sliderIndex].value = Mathf.PingPong(sliderTime, 5);
             sliderTime += Time.deltaTime * speed;
-            // Time.time continues, which causes the skipping
 
             if (!showingStop)
             {
@@ -61,18 +73,54 @@ public class Minigame3 : MonoBehaviour
         }
     }
 
+    // this is for testing the different levels 
+    // should get replaced by day counter
+    public void LevelTest()
+    {
+        levelCounter++;
+        SetUpDay();
+    }
+
+    // this sets up the values and triggers the behaviors for each day
+    private void SetUpDay()
+    {
+        nextLevelButton.SetActive(false);
+        SaveValues();
+        RandomizeValues();
+        
+        // level 0 is the one at Start
+        if (levelCounter == 1)
+        {
+            isCheckNormal = false;
+            StartCoroutine(BlackScreen());
+        }
+        if (levelCounter == 2)
+        {
+            isCheckNormal = true;
+            StartCoroutine(TimerReset());
+        }
+        if (levelCounter == 3)
+        {
+            StopAllCoroutines();
+            computerReacts = true;
+            StartCoroutine(BlackScreen());
+        }
+    }
+
 
     // first part 
     public void SquashCurve()
     {
-        if (curve.transform.localScale.x > 0.3)
+        ComputerReaction();
+        if (curve.transform.localScale.x > 0.3 && computerReacts)
         {
             curve.transform.localScale = new Vector3((curve.transform.localScale.x - stretchFactor), curve.transform.localScale.y, curve.transform.localScale.z);
         }
     }
     public void StretchCurve()
     {
-        if (curve.transform.localScale.x < 1.8)
+        ComputerReaction();
+        if (curve.transform.localScale.x < 1.8 && computerReacts)
         {
             curve.transform.localScale = new Vector3((curve.transform.localScale.x + stretchFactor), curve.transform.localScale.y, curve.transform.localScale.z);
         }
@@ -80,16 +128,19 @@ public class Minigame3 : MonoBehaviour
 
     public void CheckIfCurveCorrect(GameObject button)
     {
-        if (Mathf.Abs(curve.transform.localScale.x - curve_ref.transform.localScale.x) < 0.2)
+        ComputerReaction();
+        if (computerReacts)
         {
-            button.transform.GetChild(0).gameObject.SetActive(true);
-            greenButtons.Add(button.transform.GetChild(0).gameObject);
-            button.GetComponent<Button>().interactable = false;
-            SwitchInteractability(squashButton);
-            SwitchInteractability(stretchButton);
-
-            correctCounter++;
-            CheckIfTaskComplete();
+            if (Mathf.Abs(curve.transform.localScale.x - curve_ref.transform.localScale.x) < 0.2)
+            {
+                button.transform.GetChild(0).gameObject.SetActive(true);
+                greenButtons.Add(button.transform.GetChild(0).gameObject);
+                button.GetComponent<Button>().interactable = false; // needs to be reset too
+                SwitchInteractability(squashButton);
+                SwitchInteractability(stretchButton);
+                correctCounter++;
+                CheckIfTaskComplete();
+            }
         }
     }
 
@@ -97,15 +148,19 @@ public class Minigame3 : MonoBehaviour
     // second part
     public void ChooseButtons(bool turnOn)
     {
-        if (turnOn && amount < 5)
+        ComputerReaction();
+        if (computerReacts)
         {
-            squares[amount].SetActive(true);
-            amount++;
-        }
-        else if (!turnOn && amount > 0)
-        {
-            amount--;
-            squares[amount].SetActive(false);
+            if (turnOn && amount < 5)
+            {
+                squares[amount].SetActive(true);
+                amount++;
+            }
+            else if (!turnOn && amount > 0)
+            {
+                amount--;
+                squares[amount].SetActive(false);
+            }
         }
     }
 
@@ -135,7 +190,6 @@ public class Minigame3 : MonoBehaviour
             button.GetComponent<Button>().interactable = false;
             SwitchInteractability(minusButton);
             SwitchInteractability(plusButton);
-
             correctCounter++;
             CheckIfTaskComplete();
         }
@@ -147,44 +201,59 @@ public class Minigame3 : MonoBehaviour
     {
         if (moveBar)
         {
-            CheckIfSlidersCorrect(i);
+            CheckIfSliderIsCorrect(i);
         }
         moveBar = !moveBar;
         sliderIndex = i;
+        sliderTime = slider[sliderIndex].value;
     }
 
     // changes the sprite from play to stop and back when the bar moves
     private void ChangeSprite()
     {
-        if (buttons[sliderIndex].transform.GetChild(0).gameObject.activeSelf)
+        if (sliderButtons[sliderIndex].transform.GetChild(0).gameObject.activeSelf)
         {
-            buttons[sliderIndex].transform.GetChild(0).gameObject.SetActive(false);
+            sliderButtons[sliderIndex].transform.GetChild(0).gameObject.SetActive(false);
         }
         else
         {
-            buttons[sliderIndex].transform.GetChild(0).gameObject.SetActive(true);
+            sliderButtons[sliderIndex].transform.GetChild(0).gameObject.SetActive(true);
         }
-        if (buttons[sliderIndex].transform.GetChild(1).gameObject.activeSelf)
+        if (sliderButtons[sliderIndex].transform.GetChild(1).gameObject.activeSelf)
         {
-            buttons[sliderIndex].transform.GetChild(1).gameObject.SetActive(false);
+            sliderButtons[sliderIndex].transform.GetChild(1).gameObject.SetActive(false);
         }
         else
         {
-            buttons[sliderIndex].transform.GetChild(1).gameObject.SetActive(true);
+            sliderButtons[sliderIndex].transform.GetChild(1).gameObject.SetActive(true);
         }
         showingStop = !showingStop;
     }
 
     // automatically checks if the bar levels are close enough
-    public void CheckIfSlidersCorrect(int i)
+    public void CheckIfSliderIsCorrect(int i)
     {
-        if (Mathf.Abs(slider[i].value - slider_ref[i].value) < 0.5)
+        if (Mathf.Abs(slider[i].value - slider_ref[i].value) < 0.5 && computerReacts)
         {
-            buttons[i].transform.GetChild(2).gameObject.SetActive(true);
-            greenButtons.Add(buttons[i].transform.GetChild(2).gameObject);
-            buttons[i].GetComponent<Button>().interactable = false;
+            sliderButtons[i].transform.GetChild(2).gameObject.SetActive(true);
+            greenButtons.Add(sliderButtons[i].transform.GetChild(2).gameObject);
+            sliderButtons[i].GetComponent<Button>().interactable = false;
             correctCounter++;
             CheckIfTaskComplete();
+        }
+    }
+
+    
+    // this randomizes if the computer responds on certain days
+    private void ComputerReaction()
+    {
+        if (!isCheckNormal)
+        {
+            int i = Random.Range(0, 2);
+            if (i > 1)
+            {
+                computerReacts = true;
+            }
         }
     }
 
@@ -194,12 +263,22 @@ public class Minigame3 : MonoBehaviour
     {
         if (correctCounter == 6)
         {
-            Debug.Log("You did it!");
+            if (levelCounter < 3)
+            {
+                Debug.Log("Onto the next one!");
+            }
+            else
+            {
+                Debug.Log("You did it!");
+            }
             correctCounter = 0;
+            nextLevelButton.SetActive(true);
+            StopCoroutine(TimerReset());
         } 
     }
 
-    // randomize the values for each part
+
+    // randomize the values of the reference for each part
     public void RandomizeValues()
     {
         // first part
@@ -227,10 +306,11 @@ public class Minigame3 : MonoBehaviour
             slider.value = referenceValue;
         }
 
+        correctCounter = 0;
         ResetButtons();
     }
 
-    // resets all the buttons and turns off the green covers
+    // resets all the sliderButtons and turns off the green covers
     private void ResetButtons()
     {
         foreach (GameObject button in greenButtons)
@@ -239,14 +319,76 @@ public class Minigame3 : MonoBehaviour
         }
         greenButtons.Clear();
 
-        SwitchInteractability(squashButton);
-        SwitchInteractability(stretchButton);
-        SwitchInteractability(minusButton);
-        SwitchInteractability(plusButton);
+        squashButton.interactable = true;
+        stretchButton.interactable = true;
+        checkButton01.interactable = true;
+        minusButton.interactable = true;
+        plusButton.interactable = true;
+        checkButton02.interactable = true;
 
-        foreach (GameObject button in buttons)
+        foreach (GameObject button in sliderButtons)
         {
             button.GetComponent<Button>().interactable = true;
+        }
+    }
+
+    // these are needed for resetting the values on the console
+    private void SaveValues()
+    {
+        prevStretchFactor = curve.transform.localScale.x;
+        prevAmount = amount; 
+        for (int i = 0; i < 4; i++)
+        {
+            prevSliderValues[i] = slider[i].value;
+        }
+    }
+    private void ResetConsole()
+    {
+        curve.transform.localScale = new Vector3(prevStretchFactor, curve.transform.localScale.y, curve.transform.localScale.z);
+
+        foreach (GameObject square in squares)
+        {
+            square.SetActive(false);
+        }
+        for (int i = 0; i <= prevAmount; i++)
+        {
+            if (i != 0)
+            {
+                squares[(i - 1)].SetActive(true);
+            }
+        }
+        amount = prevAmount;
+
+        for (int i = 0; i < 4; i++)
+        {
+            slider[i].value = prevSliderValues[i];
+        }
+    }
+
+
+    private IEnumerator BlackScreen()
+    {
+        int i = Random.Range(5, 10);
+        yield return new WaitForSeconds(i);
+        blackReferenceScreen.SetActive(true);
+        ResetConsole();
+        if (levelCounter == 1)
+        {
+            yield return new WaitForSeconds(1);
+            blackReferenceScreen.SetActive(false);
+            isCheckNormal = true;
+        }
+        RandomizeValues();
+    }
+
+    private IEnumerator TimerReset()
+    {
+        yield return new WaitForSeconds(25);
+        ResetConsole();
+        RandomizeValues();
+        if (levelCounter == 2)
+        {
+            StartCoroutine(TimerReset());
         }
     }
 
@@ -255,4 +397,5 @@ public class Minigame3 : MonoBehaviour
     {
         button.interactable = !button.interactable;
     }
+
 }
