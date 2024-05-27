@@ -25,7 +25,7 @@ public class Minigame2 : MonoBehaviour
 
     [SerializeField] private GameObject movementCounter;
     private int stepCounter = 2;
-    private bool canMove = true; 
+    private bool canMove = true;
     private bool cellOccupied;
 
     [SerializeField] private GameObject moon01;
@@ -106,6 +106,7 @@ public class Minigame2 : MonoBehaviour
             moon02.transform.position = display.transform.Find("cell_I_06").transform.position;
 
             blackDisplay.SetActive(true);
+            TestAudioManager.onGlitch?.Invoke(true);
         }
         if (day == 6)
         {
@@ -113,15 +114,17 @@ public class Minigame2 : MonoBehaviour
             moon02.transform.position = display.transform.Find("cell_J_07").transform.position;
             anomaly01.SetActive(false);
             anomaly02.SetActive(true);
-            
+
             bigShip.SetActive(true);
             blackDisplay.SetActive(false);
+            TestAudioManager.onGlitch?.Invoke(false);
         }
         if (day == 7)
         {
             moon01.transform.position = display.transform.Find("cell_B_06").transform.position;
             moon02.SetActive(false);
             bigShip.SetActive(false);
+            TestAudioManager.onGlitch?.Invoke(false);
         }
         if (dayCounter == 8) // remove later
         {
@@ -181,7 +184,7 @@ public class Minigame2 : MonoBehaviour
             MoveBlackShip();
             cellOccupied = false;
         }
-        closestCell = Vector3.zero; 
+        closestCell = Vector3.zero;
     }
     public void MoveVertical(float direction)
     {
@@ -222,7 +225,7 @@ public class Minigame2 : MonoBehaviour
             MoveBlackShip();
             cellOccupied = false; // maybe that helps?
         }
-        closestCell = Vector3.zero; 
+        closestCell = Vector3.zero;
     }
 
     // this checks if the cell the ship is trying to move to is occupied by another object
@@ -233,7 +236,7 @@ public class Minigame2 : MonoBehaviour
         {
             cellOccupied = true;
         }
-        else 
+        else
         {
             cellOccupied = false;
         }
@@ -245,7 +248,7 @@ public class Minigame2 : MonoBehaviour
         {
             ship.transform.rotation = Quaternion.Euler(0, 0, 270);
         }
-        else 
+        else
         {
             ship.transform.rotation = Quaternion.Euler(0, 0, 90);
         }

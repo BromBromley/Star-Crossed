@@ -31,7 +31,7 @@ public class Minigame1A : MonoBehaviour
     private EventSystem _eventSystem;
     private GraphicRaycaster _raycaster;
     private PointerEventData _pointerEventData;
-    
+
     private Color pink = new Color32(239, 60, 228, 255);
     private Color blue = new Color32(91, 104, 199, 255);
     private Color transparentColor = new Color32(255, 255, 255, 0);
@@ -88,7 +88,7 @@ public class Minigame1A : MonoBehaviour
                 }
             }
         }
-        else 
+        else
         {
             usingCleaner = false;
             usingScanner = false;
@@ -120,7 +120,7 @@ public class Minigame1A : MonoBehaviour
                 }
             }
         }
-        
+
         // this checks if the player is scanning damages with a raycast
         if (usingScanner)
         {
@@ -145,7 +145,7 @@ public class Minigame1A : MonoBehaviour
         {
             SetUpRoundOne();
         }
-        else 
+        else
         {
             SetUpRoundTwo();
         }
@@ -166,7 +166,7 @@ public class Minigame1A : MonoBehaviour
             for (int i = 0; i < level01.transform.GetChild(j).transform.childCount; i++)
             {
                 if (level01.transform.GetChild(j).transform.GetChild(i).tag == "Dirt")
-                {   
+                {
                     dirtList.Add(level01.transform.GetChild(j).transform.GetChild(i).gameObject);
                 }
                 if (level01.transform.GetChild(j).transform.GetChild(i).tag == "Damage")
@@ -280,6 +280,7 @@ public class Minigame1A : MonoBehaviour
         float fadeTime = 0f;
         float speed = 5f;
 
+        TestAudioManager.onGlitch?.Invoke(false);
         while (patch.GetComponent<Image>().color.a > 0)
         {
             fadeTime += speed * Time.deltaTime;
@@ -304,12 +305,12 @@ public class Minigame1A : MonoBehaviour
             showingCleaner = !showingCleaner;
             showingScanner = false;
             showingPatch = false;
-        } 
+        }
         else if (toolName == "scanner")
         {
             showingScanner = !showingScanner;
             showingCleaner = false;
-            showingPatch = false; 
+            showingPatch = false;
         }
         else if (toolName == "patch")
         {
@@ -355,7 +356,7 @@ public class Minigame1A : MonoBehaviour
                 patch.GetComponent<PatchScript>().CheckIfCleaned();
             }
         }
-        else 
+        else
         {
             img_patch.SetActive(false);
             foreach (GameObject patch in patchList)

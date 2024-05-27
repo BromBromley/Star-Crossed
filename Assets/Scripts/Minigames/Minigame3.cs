@@ -87,7 +87,7 @@ public class Minigame3 : MonoBehaviour
         nextLevelButton.SetActive(false);
         SaveValues();
         RandomizeValues();
-        
+
         // level 0 is the one at Start
         if (levelCounter == 1)
         {
@@ -243,7 +243,7 @@ public class Minigame3 : MonoBehaviour
         }
     }
 
-    
+
     // this randomizes if the computer responds on certain days
     private void ComputerReaction()
     {
@@ -274,7 +274,7 @@ public class Minigame3 : MonoBehaviour
             correctCounter = 0;
             nextLevelButton.SetActive(true);
             StopCoroutine(TimerReset());
-        } 
+        }
     }
 
 
@@ -336,7 +336,7 @@ public class Minigame3 : MonoBehaviour
     private void SaveValues()
     {
         prevStretchFactor = curve.transform.localScale.x;
-        prevAmount = amount; 
+        prevAmount = amount;
         for (int i = 0; i < 4; i++)
         {
             prevSliderValues[i] = slider[i].value;
@@ -370,6 +370,7 @@ public class Minigame3 : MonoBehaviour
     {
         int i = Random.Range(5, 10);
         yield return new WaitForSeconds(i);
+        TestAudioManager.onGlitch?.Invoke(true);
         blackReferenceScreen.SetActive(true);
         ResetConsole();
         if (levelCounter == 1)
@@ -384,6 +385,7 @@ public class Minigame3 : MonoBehaviour
     private IEnumerator TimerReset()
     {
         yield return new WaitForSeconds(25);
+        TestAudioManager.onGlitch?.Invoke(true);
         ResetConsole();
         RandomizeValues();
         if (levelCounter == 2)

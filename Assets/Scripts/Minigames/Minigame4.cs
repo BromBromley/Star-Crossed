@@ -29,7 +29,7 @@ public class Minigame4 : MonoBehaviour
 
     [SerializeField] private GameObject[] waterLevelHUD = new GameObject[3];
     [SerializeField] private GameObject[] nutrientLevelHUD = new GameObject[3];
-    
+
 
     void Start()
     {
@@ -48,7 +48,7 @@ public class Minigame4 : MonoBehaviour
 
         creature.GetComponent<Image>().color = transparentColor;
         creature.SetActive(false);
-        
+
         UpdateHUD();
     }
 
@@ -69,7 +69,7 @@ public class Minigame4 : MonoBehaviour
         {
             Drain01();
         }
-        else 
+        else
         {
             Drain02();
         }
@@ -126,7 +126,7 @@ public class Minigame4 : MonoBehaviour
         }
     }
 
-    
+
     // this checks if the levels of the plants are filled already to see if they should be interactable or not
     private void TurnOnPlants()
     {
@@ -276,6 +276,7 @@ public class Minigame4 : MonoBehaviour
     private IEnumerator FadeInCreature()
     {
         yield return new WaitForSeconds(4);
+        TestAudioManager.onGlitch?.Invoke(false);
         creature.SetActive(true);
         float fadeTime = 0f;
         float speed = 0.3f;
