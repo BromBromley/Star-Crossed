@@ -126,9 +126,10 @@ public class Minigame2 : MonoBehaviour
             bigShip.SetActive(false);
             TestAudioManager.onGlitch?.Invoke(false);
         }
-        if (dayCounter == 8) // remove later
+        if (dayCounter == 8)
         {
             Debug.Log("You have reached your destination! ... or have you?");
+            TestSceneManager.onFinishedTask?.Invoke(1);
         }
     }
 

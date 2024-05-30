@@ -268,7 +268,14 @@ public class Minigame4 : MonoBehaviour
         if (sumWater == 15 && sumNutrients == 15)
         {
             Debug.Log("You did it!");
-            nextDayButton.SetActive(true);
+            if (dayCounter == 7)
+            {
+                TestSceneManager.onFinishedTask?.Invoke(3);
+            }
+            else
+            {
+                nextDayButton.SetActive(true);
+            }
         }
     }
 

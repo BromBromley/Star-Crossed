@@ -270,6 +270,7 @@ public class Minigame3 : MonoBehaviour
             else
             {
                 Debug.Log("You did it!");
+                TestSceneManager.onFinishedTask?.Invoke(2);
             }
             correctCounter = 0;
             nextLevelButton.SetActive(true);

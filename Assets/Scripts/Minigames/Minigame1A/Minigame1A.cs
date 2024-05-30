@@ -381,7 +381,7 @@ public class Minigame1A : MonoBehaviour
             if (finishedSecondRound)
             {
                 Debug.Log("You did it!");
-                // show 'back to menu' thing
+                TestSceneManager.onFinishedTask?.Invoke(0);
             }
         }
     }

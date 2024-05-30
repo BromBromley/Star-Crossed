@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class TestAudioManager : MonoBehaviour
 {
@@ -14,6 +15,9 @@ public class TestAudioManager : MonoBehaviour
     [SerializeField] private AudioClip weirdSound;
     public delegate void OnGlitch(bool glitch);
     public static OnGlitch onGlitch;
+
+    //[SerializeField] private Slider musicSlider;
+    //[SerializeField] private Slider sfxSlider;
 
 
     void Start()
@@ -34,4 +38,11 @@ public class TestAudioManager : MonoBehaviour
             _sfxSource.PlayOneShot(weirdSound, _sfxSource.volume);
         }
     }
+
+    /*
+    public void UpdateVolume(GameObject slider)
+    {
+
+    }
+    */
 }
