@@ -12,6 +12,7 @@ public class Minigame4 : MonoBehaviour
     private bool holdingNutrients;
 
     [SerializeField] private GameObject[] plants = new GameObject[3];
+    [SerializeField] private GameObject[] plantOutlines = new GameObject[3];
     private int[] waterLevels = new int[3];
     private int[] nutrientLevels = new int[3];
 
@@ -24,20 +25,25 @@ public class Minigame4 : MonoBehaviour
     [SerializeField] private Sprite[] secondPlantSprites = new Sprite[3];
     [SerializeField] private Sprite[] thirdPlantSprites = new Sprite[3];
 
+    [SerializeField] private GameObject leaf;
+
     [SerializeField] private GameObject creature;
     private Color transparentColor = new Color32(255, 255, 255, 0);
 
     [SerializeField] private GameObject[] waterLevelHUD = new GameObject[3];
     [SerializeField] private GameObject[] nutrientLevelHUD = new GameObject[3];
 
+    // line for showing active tool
+    [SerializeField] private GameObject line;
+    private Vector3 pointerPosition;
+    private Vector3 buttonPosition;
+
 
     void Start()
     {
         nextDayButton.SetActive(false);
-        for (int i = 0; i < 3; i++)
-        {
-            plants[i].GetComponent<Button>().interactable = false;
-        }
+        line.SetActive(false);
+        leaf.SetActive(false);
 
         waterLevels[0] = 2;
         waterLevels[1] = 3;
@@ -49,7 +55,20 @@ public class Minigame4 : MonoBehaviour
         creature.GetComponent<Image>().color = transparentColor;
         creature.SetActive(false);
 
+        TurnOffPlants();
         UpdateHUD();
+    }
+
+    void Update()
+    {
+        if (holdingWater || holdingNutrients)
+        {
+            pointerPosition = Input.mousePosition;
+            line.transform.position = (buttonPosition + pointerPosition) / 2f;
+            Vector3 direction = buttonPosition - pointerPosition;
+            line.transform.rotation = Quaternion.Euler(0f, 0f, Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg);
+            line.transform.localScale = new Vector3(direction.magnitude / 50, 0.15f, 1f);
+        }
     }
 
 
@@ -78,6 +97,7 @@ public class Minigame4 : MonoBehaviour
             plants[0].GetComponent<Image>().sprite = firstPlantSprites[0];
             plants[1].GetComponent<Image>().sprite = secondPlantSprites[0];
             plants[2].GetComponent<Image>().sprite = thirdPlantSprites[0];
+            leaf.SetActive(true);
         }
         if (dayCounter == 6)
         {
@@ -98,32 +118,44 @@ public class Minigame4 : MonoBehaviour
 
 
     // this checks which tool has been chosen and triggers the plants
-    public void ClickedWater()
+    public void ClickedWater(GameObject button)
     {
+        AssignStartingPoint(button);
         holdingWater = !holdingWater;
         holdingNutrients = false;
         if (holdingWater)
         {
             TurnOnPlants();
+            line.SetActive(true);
         }
         else
         {
             TurnOffPlants();
+            line.SetActive(false);
         }
     }
 
-    public void ClickedNutrients()
+    public void ClickedNutrients(GameObject button)
     {
+        AssignStartingPoint(button);
         holdingNutrients = !holdingNutrients;
         holdingWater = false;
         if (holdingNutrients)
         {
             TurnOnPlants();
+            line.SetActive(true);
         }
         else
         {
             TurnOffPlants();
+            line.SetActive(false);
         }
+    }
+
+    // this assigns the right button as starting point for the line
+    private void AssignStartingPoint(GameObject button)
+    {
+        buttonPosition = button.transform.position;
     }
 
 
@@ -135,10 +167,12 @@ public class Minigame4 : MonoBehaviour
             if (holdingWater && waterLevels[i] < 5)
             {
                 plants[i].GetComponent<Button>().interactable = true;
+                plantOutlines[i].SetActive(true);
             }
             if (holdingNutrients && nutrientLevels[i] < 5)
             {
                 plants[i].GetComponent<Button>().interactable = true;
+                plantOutlines[i].SetActive(true);
             }
         }
     }
@@ -149,6 +183,10 @@ public class Minigame4 : MonoBehaviour
         {
             plant.GetComponent<Button>().interactable = false;
         }
+        for (int i = 0; i < 3; i++)
+        {
+            plantOutlines[i].SetActive(false);
+        }
     }
 
 
@@ -156,6 +194,7 @@ public class Minigame4 : MonoBehaviour
     // called by the button components of each plant
     public void GetRefilled(int index)
     {
+        line.SetActive(false);
         TurnOffPlants();
         if (holdingWater)
         {
@@ -177,13 +216,13 @@ public class Minigame4 : MonoBehaviour
         CheckIfDone();
     }
 
-
+    // updates the values of the bars for water and nutrients
     private void UpdateHUD()
     {
         for (int i = 0; i < 3; i++)
         {
-            waterLevelHUD[i].GetComponent<TextMeshProUGUI>().text = waterLevels[i].ToString();
-            nutrientLevelHUD[i].GetComponent<TextMeshProUGUI>().text = nutrientLevels[i].ToString();
+            waterLevelHUD[i].GetComponent<Slider>().value = waterLevels[i];
+            nutrientLevelHUD[i].GetComponent<Slider>().value = nutrientLevels[i];
         }
     }
 
@@ -287,13 +326,14 @@ public class Minigame4 : MonoBehaviour
         creature.SetActive(true);
         float fadeTime = 0f;
         float speed = 0.3f;
-        while (creature.GetComponent<Image>().color != Color.white)
+        while (creature.GetComponent<Image>().color != Color.black)
         {
             fadeTime += speed * Time.deltaTime;
             creature.GetComponent<Image>().color = Color.Lerp(transparentColor, Color.black, fadeTime);
             yield return null;
         }
         yield return new WaitForSeconds(5);
+        fadeTime = 0f;
         while (creature.GetComponent<Image>().color != transparentColor)
         {
             fadeTime += speed * Time.deltaTime;

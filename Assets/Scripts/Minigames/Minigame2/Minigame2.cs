@@ -32,6 +32,7 @@ public class Minigame2 : MonoBehaviour
     [SerializeField] private GameObject moon02;
     [SerializeField] private GameObject anomaly01;
     [SerializeField] private GameObject anomaly02;
+    [SerializeField] private GameObject anomaly03;
 
     private int dayCounter;
     [SerializeField] private GameObject dayButton;
@@ -66,6 +67,7 @@ public class Minigame2 : MonoBehaviour
             //moon02.transform.position = display.transform.Find("cell_F_09").transform.position; -> buggy
             anomaly01.SetActive(true);
             anomaly02.SetActive(false);
+            anomaly03.SetActive(false);
 
             bigShip.SetActive(false);
             blackShip.SetActive(false);
@@ -80,6 +82,8 @@ public class Minigame2 : MonoBehaviour
         {
             moon01.transform.position = display.transform.Find("cell_D_02").transform.position;
             moon02.transform.position = display.transform.Find("cell_F_07").transform.position;
+            anomaly01.SetActive(false);
+            anomaly02.SetActive(true);
 
             blackShip.SetActive(true);
             // this to be one step of the ship earlier
@@ -112,8 +116,8 @@ public class Minigame2 : MonoBehaviour
         {
             moon01.transform.position = display.transform.Find("cell_C_06").transform.position;
             moon02.transform.position = display.transform.Find("cell_J_07").transform.position;
-            anomaly01.SetActive(false);
-            anomaly02.SetActive(true);
+            anomaly02.SetActive(false);
+            anomaly03.SetActive(true);
 
             bigShip.SetActive(true);
             blackDisplay.SetActive(false);

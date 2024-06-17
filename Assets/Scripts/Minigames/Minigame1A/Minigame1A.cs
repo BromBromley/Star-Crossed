@@ -33,7 +33,7 @@ public class Minigame1A : MonoBehaviour
     private PointerEventData _pointerEventData;
 
     private Color pink = new Color32(239, 60, 228, 255);
-    private Color blue = new Color32(91, 104, 199, 255);
+    private Color blue = new Color32(104, 113, 140, 255);
     private Color transparentColor = new Color32(255, 255, 255, 0);
 
     [SerializeField] private GameObject[] bitemarks = new GameObject[3];
