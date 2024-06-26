@@ -17,6 +17,7 @@ public class Minigame1A : MonoBehaviour
     private List<GameObject> damageList = new List<GameObject>();
     private List<GameObject> patchList = new List<GameObject>();
 
+    // images of the tools following the mouse
     [SerializeField] private GameObject img_cleaner;
     private bool showingCleaner;
     private bool usingCleaner;
@@ -28,10 +29,12 @@ public class Minigame1A : MonoBehaviour
 
     private GameObject currentTool;
 
+    // raycasting when using the tools
     private EventSystem _eventSystem;
     private GraphicRaycaster _raycaster;
     private PointerEventData _pointerEventData;
 
+    // colors for scanning and cleaning
     private Color pink = new Color32(239, 60, 228, 255);
     private Color blue = new Color32(104, 113, 140, 255);
     private Color transparentColor = new Color32(255, 255, 255, 0);

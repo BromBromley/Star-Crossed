@@ -12,6 +12,10 @@ TagManager:
   - Damage
   - Dirt
   - Patch
+  - Scratch
+  - Welding
+  - MetalPatch
+  - Bolt
   layers:
   - Default
   - TransparentFX

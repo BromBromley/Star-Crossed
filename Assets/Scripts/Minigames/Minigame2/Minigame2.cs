@@ -133,7 +133,7 @@ public class Minigame2 : MonoBehaviour
         if (dayCounter == 8)
         {
             Debug.Log("You have reached your destination! ... or have you?");
-            TestSceneManager.onFinishedTask?.Invoke(1);
+            TestSceneManager.onFinishedTask?.Invoke(2);
         }
     }
 

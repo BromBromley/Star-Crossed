@@ -9,8 +9,8 @@ public class TestSceneManager : MonoBehaviour
     // this is the game manager of the minigame test scene
 
     [SerializeField] private GameObject minigameCanvas;
-    [SerializeField] private GameObject[] minigames = new GameObject[4];
-    [SerializeField] private GameObject[] minigameButtons = new GameObject[4];
+    [SerializeField] private GameObject[] minigames = new GameObject[5];
+    [SerializeField] private GameObject[] minigameButtons = new GameObject[5];
     [SerializeField] private GameObject backToMenuButton;
     [SerializeField] private GameObject finishedScreen;
 

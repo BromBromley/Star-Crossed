@@ -67,7 +67,7 @@ public class Minigame4 : MonoBehaviour
             line.transform.position = (buttonPosition + pointerPosition) / 2f;
             Vector3 direction = buttonPosition - pointerPosition;
             line.transform.rotation = Quaternion.Euler(0f, 0f, Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg);
-            line.transform.localScale = new Vector3(direction.magnitude / 50, 0.15f, 1f);
+            line.transform.localScale = new Vector3(direction.magnitude / 110, 0.15f, 1f);
         }
     }
 
@@ -309,7 +309,7 @@ public class Minigame4 : MonoBehaviour
             Debug.Log("You did it!");
             if (dayCounter == 7)
             {
-                TestSceneManager.onFinishedTask?.Invoke(3);
+                TestSceneManager.onFinishedTask?.Invoke(4);
             }
             else
             {
