@@ -16,7 +16,7 @@ Alternatively:
 Unity Version 2022.3.12f1
 
 # Credits
-Character Art and Animation - Anton Hentzler
+Character Art and Animation - Anton Hentzler </br>
 Game Design, Code, Assets and Music - Brom Wittenmeier
 
 Sound Effects from https://opengameart.org/ licensed under CC0
