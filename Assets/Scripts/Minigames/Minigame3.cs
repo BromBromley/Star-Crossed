@@ -371,7 +371,7 @@ public class Minigame3 : MonoBehaviour
     {
         int i = Random.Range(5, 10);
         yield return new WaitForSeconds(i);
-        TestAudioManager.onGlitch?.Invoke(true);
+        TestAudioManager.onGlitch?.Invoke(0);
         blackReferenceScreen.SetActive(true);
         ResetConsole();
         if (levelCounter == 1)
@@ -386,7 +386,7 @@ public class Minigame3 : MonoBehaviour
     private IEnumerator TimerReset()
     {
         yield return new WaitForSeconds(25);
-        TestAudioManager.onGlitch?.Invoke(true);
+        TestAudioManager.onGlitch?.Invoke(0);
         ResetConsole();
         RandomizeValues();
         if (levelCounter == 2)

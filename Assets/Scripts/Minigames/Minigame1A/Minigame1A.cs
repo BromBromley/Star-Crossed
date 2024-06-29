@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
@@ -283,7 +282,7 @@ public class Minigame1A : MonoBehaviour
         float fadeTime = 0f;
         float speed = 5f;
 
-        TestAudioManager.onGlitch?.Invoke(false);
+        TestAudioManager.onGlitch?.Invoke(1);
         while (patch.GetComponent<Image>().color.a > 0)
         {
             fadeTime += speed * Time.deltaTime;

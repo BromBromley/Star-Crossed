@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
@@ -75,6 +74,14 @@ public class Minigame1B : MonoBehaviour
             {
                 usingWelder = true;
             }
+        }
+        else
+        {
+            usingWelder = false;
+        }
+
+        if (Input.GetMouseButtonDown(0))
+        {
             if (showingMetalPatch)
             {
                 _pointerEventData = new PointerEventData(_eventSystem);
@@ -104,10 +111,6 @@ public class Minigame1B : MonoBehaviour
                 }
             }
         }
-        else
-        {
-            usingWelder = false;
-        }
 
         if (usingWelder)
         {
@@ -123,6 +126,7 @@ public class Minigame1B : MonoBehaviour
                     result.gameObject.SetActive(false);
                     scratchList.Remove(result.gameObject);
                     CheckIfDone();
+                    //TestAudioManager.onUsingTool?.Invoke(0);
                 }
             }
         }
@@ -158,11 +162,11 @@ public class Minigame1B : MonoBehaviour
                     metalPatchList.Add(screen.transform.GetChild(i).gameObject);
                 }
                 if (screen.transform.GetChild(i).tag == "Bolt")
-                {   
+                {
                     boltList.Add(screen.transform.GetChild(i).gameObject);
                 }
             }
-            else 
+            else
             {
                 for (int j = 0; j < screen.transform.GetChild(i).transform.childCount; j++)
                 {
@@ -171,7 +175,7 @@ public class Minigame1B : MonoBehaviour
                         scratchList.Add(screen.transform.GetChild(i).transform.GetChild(j).gameObject);
                         screen.transform.GetChild(i).transform.GetChild(j).GetComponent<Image>().alphaHitTestMinimumThreshold = 1f;
                     }
-                } 
+                }
             }
         }
     }
@@ -187,6 +191,7 @@ public class Minigame1B : MonoBehaviour
         }
         if (patch.tag == "Bolt")
         {
+            //TestAudioManager.onUsingTool?.Invoke(1);
             boltList.Remove(patch);
             CheckIfDone();
         }
@@ -222,7 +227,7 @@ public class Minigame1B : MonoBehaviour
             img_welder.SetActive(true);
             currentTool = img_welder;
         }
-        else 
+        else
         {
             img_welder.SetActive(false);
         }

@@ -17,6 +17,11 @@ public class TestSceneManager : MonoBehaviour
     public delegate void OnFinishedTask(int index);
     public static OnFinishedTask onFinishedTask;
 
+    [SerializeField] private GameObject fadeScreen;
+    private Color transparentColor;
+    private float fadeTime;
+    private float speed = 3f;
+
 
     void Start()
     {
@@ -44,6 +49,7 @@ public class TestSceneManager : MonoBehaviour
             minigame.SetActive(false);
         }
         minigames[index].SetActive(true);
+        FadeToBlack();
     }
 
 
@@ -71,5 +77,35 @@ public class TestSceneManager : MonoBehaviour
     public void ExitGame()
     {
         Application.Quit();
+    }
+
+    public void FadeToBlack()
+    {
+        StartCoroutine(FadeOutAndIn());
+    }
+
+    // fades the screen to black by changing the color of the fade screen
+    private IEnumerator FadeOutAndIn()
+    {
+        fadeScreen.transform.SetAsLastSibling();
+        /*fadeTime = 0f;
+
+        while (fadeScreen.GetComponent<Image>().color != Color.black)
+        {
+            fadeTime += speed * Time.deltaTime;
+            fadeScreen.GetComponent<Image>().color = Color.Lerp(transparentColor, Color.black, fadeTime);
+            yield return null;
+        }*/
+
+        fadeScreen.GetComponent<Image>().color = Color.black;
+        fadeTime = 0f;
+
+        while (fadeScreen.GetComponent<Image>().color != transparentColor)
+        {
+            fadeTime += speed * Time.deltaTime;
+            fadeScreen.GetComponent<Image>().color = Color.Lerp(Color.black, transparentColor, fadeTime);
+            yield return null;
+        }
+        fadeScreen.transform.SetAsFirstSibling();
     }
 }

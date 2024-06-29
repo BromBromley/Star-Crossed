@@ -110,7 +110,7 @@ public class Minigame2 : MonoBehaviour
             moon02.transform.position = display.transform.Find("cell_I_06").transform.position;
 
             blackDisplay.SetActive(true);
-            TestAudioManager.onGlitch?.Invoke(true);
+            TestAudioManager.onGlitch?.Invoke(0);
         }
         if (day == 6)
         {
@@ -121,14 +121,14 @@ public class Minigame2 : MonoBehaviour
 
             bigShip.SetActive(true);
             blackDisplay.SetActive(false);
-            TestAudioManager.onGlitch?.Invoke(false);
+            TestAudioManager.onGlitch?.Invoke(1);
         }
         if (day == 7)
         {
             moon01.transform.position = display.transform.Find("cell_B_06").transform.position;
             moon02.SetActive(false);
             bigShip.SetActive(false);
-            TestAudioManager.onGlitch?.Invoke(false);
+            TestAudioManager.onGlitch?.Invoke(1);
         }
         if (dayCounter == 8)
         {

@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
 
 public class Minigame4 : MonoBehaviour
 {
@@ -67,7 +66,7 @@ public class Minigame4 : MonoBehaviour
             line.transform.position = (buttonPosition + pointerPosition) / 2f;
             Vector3 direction = buttonPosition - pointerPosition;
             line.transform.rotation = Quaternion.Euler(0f, 0f, Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg);
-            line.transform.localScale = new Vector3(direction.magnitude / 110, 0.15f, 1f);
+            line.transform.localScale = new Vector3(direction.magnitude / 175, 0.15f, 1f);
         }
     }
 
@@ -97,7 +96,11 @@ public class Minigame4 : MonoBehaviour
             plants[0].GetComponent<Image>().sprite = firstPlantSprites[0];
             plants[1].GetComponent<Image>().sprite = secondPlantSprites[0];
             plants[2].GetComponent<Image>().sprite = thirdPlantSprites[0];
+            plantOutlines[0].GetComponent<Image>().sprite = firstPlantSprites[0];
+            plantOutlines[1].GetComponent<Image>().sprite = secondPlantSprites[0];
+            plantOutlines[2].GetComponent<Image>().sprite = thirdPlantSprites[0];
             leaf.SetActive(true);
+            TestAudioManager.onGlitch?.Invoke(1);
         }
         if (dayCounter == 6)
         {
@@ -105,6 +108,9 @@ public class Minigame4 : MonoBehaviour
             plants[0].GetComponent<Image>().sprite = firstPlantSprites[1];
             plants[1].GetComponent<Image>().sprite = secondPlantSprites[1];
             plants[2].GetComponent<Image>().sprite = thirdPlantSprites[1];
+            plantOutlines[0].GetComponent<Image>().sprite = firstPlantSprites[1];
+            plantOutlines[1].GetComponent<Image>().sprite = secondPlantSprites[1];
+            plantOutlines[2].GetComponent<Image>().sprite = thirdPlantSprites[1];
         }
         if (dayCounter == 7)
         {
@@ -112,6 +118,10 @@ public class Minigame4 : MonoBehaviour
             plants[0].GetComponent<Image>().sprite = firstPlantSprites[2];
             plants[1].GetComponent<Image>().sprite = secondPlantSprites[2];
             plants[2].GetComponent<Image>().sprite = thirdPlantSprites[2];
+            plantOutlines[0].GetComponent<Image>().sprite = firstPlantSprites[2];
+            plantOutlines[1].GetComponent<Image>().sprite = secondPlantSprites[2];
+            plantOutlines[2].GetComponent<Image>().sprite = thirdPlantSprites[2];
+            StartCoroutine(WaitForFootsteps());
         }
         UpdateHUD();
     }
@@ -151,6 +161,7 @@ public class Minigame4 : MonoBehaviour
             line.SetActive(false);
         }
     }
+
 
     // this assigns the right button as starting point for the line
     private void AssignStartingPoint(GameObject button)
@@ -257,6 +268,7 @@ public class Minigame4 : MonoBehaviour
                 nutrientLevels[i] = 5;
             }
         }
+        DrainCheck(true);
     }
 
     private void Drain02()
@@ -285,6 +297,35 @@ public class Minigame4 : MonoBehaviour
             if (nutrientLevels[i] > 5)
             {
                 nutrientLevels[i] = 5;
+            }
+        }
+        DrainCheck(false);
+    }
+
+    // this checks that the levels aren't full at the start of the day
+    private void DrainCheck(bool firstDrain)
+    {
+        int sumWater = 0;
+        foreach (int water in waterLevels)
+        {
+            sumWater += water;
+        }
+
+        int sumNutrients = 0;
+        foreach (int nutrients in nutrientLevels)
+        {
+            sumNutrients += nutrients;
+        }
+
+        if (sumWater == 15 && sumNutrients == 15)
+        {
+            if (firstDrain)
+            {
+                Drain01();
+            }
+            else
+            {
+                Drain02();
             }
         }
     }
@@ -322,7 +363,7 @@ public class Minigame4 : MonoBehaviour
     private IEnumerator FadeInCreature()
     {
         yield return new WaitForSeconds(4);
-        TestAudioManager.onGlitch?.Invoke(false);
+        TestAudioManager.onGlitch?.Invoke(3);
         creature.SetActive(true);
         float fadeTime = 0f;
         float speed = 0.3f;
@@ -342,4 +383,9 @@ public class Minigame4 : MonoBehaviour
         }
     }
 
+    private IEnumerator WaitForFootsteps()
+    {
+        yield return new WaitForSeconds(2);
+        TestAudioManager.onGlitch?.Invoke(2);
+    }
 }
