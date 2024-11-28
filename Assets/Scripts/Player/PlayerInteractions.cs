@@ -10,6 +10,7 @@ public class PlayerInteractions : MonoBehaviour
 
     [SerializeField] private GameObject interactIcon;
 
+    private bool couldInteract;
     private bool isInteracting;
     private bool canEnterDoor = true;
     public delegate void OnUsingDoor();
@@ -48,7 +49,11 @@ public class PlayerInteractions : MonoBehaviour
     private void OnTriggerStay(Collider other)
     {
         // shows the interaction button
-        interactIcon.SetActive(true);
+        if (other.tag != "Door")
+        {
+            interactIcon.SetActive(true);
+        }
+        couldInteract = true;
 
         if (isInteracting)
         {
@@ -89,6 +94,7 @@ public class PlayerInteractions : MonoBehaviour
     {
         interactIcon.SetActive(false);
         isInteracting = false;
+        couldInteract = false;
     }
 
     // automatically teleports the player if they walk through a door
@@ -105,7 +111,10 @@ public class PlayerInteractions : MonoBehaviour
 
     private void Interact(InputAction.CallbackContext context)
     {
-        isInteracting = true;
+        if (couldInteract)
+        {
+            isInteracting = true;
+        }
     }
 
     // this prevents accidentally spamming through doors
