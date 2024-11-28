@@ -13,18 +13,25 @@ public class PlayerMovement : MonoBehaviour
     private float movement;
     private UnityEngine.Vector3 lastMovement;
     private float speed = 0;
-    private float maxSpeed = 14f;
+    private float maxSpeed = 8f;
     private float acceleration = 16f;
-    private float stoppingForce = 18f;
+    private float stoppingForce = 30f;
 
     // public bool playerIsFloating;
     private PlayerInputActions playerControls;
     private InputAction moveAction;
 
+    private Animator animator;
+    [SerializeField] private GameObject playerSprite;
+    private bool facingLeft = false;
+
+
+
     private void Awake()
     {
         playerControls = new PlayerInputActions();
     }
+
 
     private void OnEnable()
     {
@@ -32,18 +39,23 @@ public class PlayerMovement : MonoBehaviour
         moveAction.Enable();
     }
 
+
     private void OnDisable()
     {
         moveAction.Disable();
     }
 
+
+
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
+        animator = GetComponentInChildren<Animator>();
         PlayerInteractions.onInteraction += SwitchMovementBool;
         PlayerInteractions.onUsingDoor += PausePlayerMovement;
         GameManager.onContinuingGame += EnableMovement;
     }
+
 
     private void Update()
     {
@@ -57,6 +69,7 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+
     private void FixedUpdate()
     {
         if (movement > 0.0f || movement < 0.0f)
@@ -67,7 +80,21 @@ public class PlayerMovement : MonoBehaviour
         {
             Decelerate();
         }
+
+        // this checks the player's direction and flips the sprite accordingly
+        if (movement < 0 && !facingLeft)
+        {
+            FlipSprite();
+        }
+        else if (movement > 0 && facingLeft)
+        {
+            FlipSprite();
+        }
+
+        animator.SetFloat("speed", Mathf.Abs(movement));
     }
+
+
 
     // this gives the movement a fade in
     private void Accelerate()
@@ -88,19 +115,23 @@ public class PlayerMovement : MonoBehaviour
         rb.velocity = new UnityEngine.Vector3(movement * speed, 0, 0);
     }
 
+
     // this gives the movement a fade out
     private void Decelerate()
     {
-        speed -= stoppingForce * Time.deltaTime;
+        //speed -= stoppingForce * Time.deltaTime;
 
-        rb.velocity = lastMovement * speed;
+        //rb.velocity = lastMovement * speed;
+        rb.velocity -= 0.2f * rb.velocity;
 
-        if (speed <= 0.0f)
+        /*if (speed <= 0.0f)
         {
             speed = 0.0f;
             lastMovement = UnityEngine.Vector3.zero;
-        }
+        }*/
     }
+
+
 
     // changes the state of the bool to match the interactions
     private void SwitchMovementBool(bool isTask)
@@ -108,10 +139,13 @@ public class PlayerMovement : MonoBehaviour
         playerCanMove = !playerCanMove;
     }
 
+
     private void EnableMovement()
     {
         playerCanMove = true;
     }
+
+
 
     // this disables the player movement for a short period while going through doors
     private void PausePlayerMovement()
@@ -119,10 +153,23 @@ public class PlayerMovement : MonoBehaviour
         StartCoroutine(PausingPlayerMovement());
     }
 
+
     private IEnumerator PausingPlayerMovement()
     {
         playerCanMove = false;
         yield return new WaitForSeconds(0.5f);
         playerCanMove = true;
     }
+
+
+
+    private void FlipSprite()
+    {
+        UnityEngine.Vector3 currentScale = playerSprite.transform.localScale;
+        currentScale.x *= -1;
+        playerSprite.transform.localScale = currentScale;
+
+        facingLeft = !facingLeft;
+    }
+
 }
