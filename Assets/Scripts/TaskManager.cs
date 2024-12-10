@@ -29,6 +29,8 @@ public class TaskManager : MonoBehaviour
 
     [SerializeField] private bool showLogs;
 
+
+
     void Start()
     {
         PlayerInteractions.onInteraction += CheckWhichTask;
@@ -40,6 +42,8 @@ public class TaskManager : MonoBehaviour
         InitializeTasksOnStart();
     }
 
+
+
     // this assigns the hashtable for each task with all the necessary information
     private void InitializeTasksOnStart()
     {
@@ -50,7 +54,7 @@ public class TaskManager : MonoBehaviour
                 taskAirlock.Add("object", task);
                 taskAirlock.Add("UI", taskList.transform.GetChild(0).gameObject);
                 //taskAirlock.Add("isNeglected", false);
-                ((GameObject)taskAirlock["UI"]).GetComponent<TextMeshProUGUI>().text = "Put on your spacesuit and repair the outside hull";
+                ((GameObject)taskAirlock["UI"]).GetComponentInChildren<TextMeshProUGUI>().text = "Put on your spacesuit and repair the outside hull";
                 taskAirlock.Add("day 1", 2);
             }
             if (task.name == "spacesuit")
@@ -58,7 +62,7 @@ public class TaskManager : MonoBehaviour
                 taskSpacesuit.Add("object", task);
                 taskSpacesuit.Add("UI", taskList.transform.GetChild(1).gameObject);
                 //taskSpacesuit.Add("isNeglected", false);
-                ((GameObject)taskSpacesuit["UI"]).GetComponent<TextMeshProUGUI>().text = "Check if your spacesuit is operational";
+                ((GameObject)taskSpacesuit["UI"]).GetComponentInChildren<TextMeshProUGUI>().text = "Check if your spacesuit is operational";
                 taskSpacesuit.Add("day 1", 0);
                 taskSpacesuit.Add("day 2", 5);
             }
@@ -67,14 +71,14 @@ public class TaskManager : MonoBehaviour
                 taskHelm.Add("object", task);
                 taskHelm.Add("UI", taskList.transform.GetChild(2).gameObject);
                 //taskHelm.Add("isNeglected", false);
-                ((GameObject)taskHelm["UI"]).GetComponent<TextMeshProUGUI>().text = "Check the ship's course at the helm";
+                ((GameObject)taskHelm["UI"]).GetComponentInChildren<TextMeshProUGUI>().text = "Check the ship's course at the helm";
             }
             if (task.name == "console")
             {
                 taskConsole.Add("object", task);
                 taskConsole.Add("UI", taskList.transform.GetChild(3).gameObject);
                 //taskConsole.Add("isNeglected", false);
-                ((GameObject)taskConsole["UI"]).GetComponent<TextMeshProUGUI>().text = "Do a routine check of the ship systems";
+                ((GameObject)taskConsole["UI"]).GetComponentInChildren<TextMeshProUGUI>().text = "Do a routine check of the ship systems";
                 taskConsole.Add("day 1", 1);
                 taskConsole.Add("day 2", 3);
                 taskConsole.Add("day 3", 5);
@@ -85,14 +89,14 @@ public class TaskManager : MonoBehaviour
                 taskKitchen.Add("object", task);
                 taskKitchen.Add("UI", taskList.transform.GetChild(4).gameObject);
                 //taskKitchen.Add("isNeglected", false);
-                ((GameObject)taskKitchen["UI"]).GetComponent<TextMeshProUGUI>().text = "Get a food ration from the kitchen";
+                ((GameObject)taskKitchen["UI"]).GetComponentInChildren<TextMeshProUGUI>().text = "Get a food ration from the kitchen";
             }
             if (task.name == "plant")
             {
                 taskPlant.Add("object", task);
                 taskPlant.Add("UI", taskList.transform.GetChild(5).gameObject);
                 //taskPlant.Add("isNeglected", false);
-                ((GameObject)taskPlant["UI"]).GetComponent<TextMeshProUGUI>().text = "Water the plants in the observation deck";
+                ((GameObject)taskPlant["UI"]).GetComponentInChildren<TextMeshProUGUI>().text = "Water the plants in the observation deck";
             }
         }
         sortedTaskList[0] = taskAirlock;
@@ -102,6 +106,8 @@ public class TaskManager : MonoBehaviour
         sortedTaskList[4] = taskKitchen;
         sortedTaskList[5] = taskPlant;
     }
+
+
 
     private void ResetTasks()
     {
@@ -114,6 +120,8 @@ public class TaskManager : MonoBehaviour
             child.gameObject.SetActive(false);
         }
     }
+
+
 
     // this activates all the tasks that need to be done that day and their description in the UI
     private void SetUpTasks(int day)
@@ -140,6 +148,8 @@ public class TaskManager : MonoBehaviour
         // additional check if something has been neglected and needs to be activated too
     }
 
+
+
     private void CheckWhichTask(bool isTask)
     {
         if (isTask)
@@ -156,11 +166,15 @@ public class TaskManager : MonoBehaviour
         }
     }
 
+
+
     private void CompletedTask()
     {
         ((GameObject)sortedTaskList[taskIndex]["object"]).SetActive(false);
         ((GameObject)sortedTaskList[taskIndex]["UI"]).SetActive(false);
     }
+
+
 
     // checks if logs should be send to the console
     private void Log(string message)

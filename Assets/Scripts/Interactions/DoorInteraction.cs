@@ -9,11 +9,15 @@ public class DoorInteraction : MonoBehaviour
 
     public bool goingLeft;
 
+
+
     public void EnteringDoor(GameObject player)
     {
         //Debug.Log("entering room");
         StartCoroutine(TeleportDelay(player));
     }
+
+
 
     // delays the teleport of the player to match the fade to black
     private IEnumerator TeleportDelay(GameObject player)
@@ -21,11 +25,12 @@ public class DoorInteraction : MonoBehaviour
         yield return new WaitForSeconds(0.3f);
         if (goingLeft)
         {
-            player.transform.position += new Vector3(-60f, 0, 0);
+            player.transform.position += new Vector3(-62f, 0, 0);
         }
         else
         {
-            player.transform.position += new Vector3(60f, 0, 0);
+            player.transform.position += new Vector3(62f, 0, 0);
         }
     }
+
 }

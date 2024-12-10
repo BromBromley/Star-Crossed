@@ -26,11 +26,14 @@ public class PlayerInteractions : MonoBehaviour
     [SerializeField] private bool showLogs;
 
 
+
     private void Awake()
     {
         playerControls = new PlayerInputActions();
         interactIcon.SetActive(false);
     }
+
+
 
     private void OnEnable()
     {
@@ -39,13 +42,15 @@ public class PlayerInteractions : MonoBehaviour
         interaction.performed += Interact;
     }
 
+
     private void OnDisable()
     {
         interaction.Disable();
     }
 
+
+
     // checks if the player is standing in front of and interacting with an object
-    // maybe change to OnTriggerEnter in order to fix weird bug?
     private void OnTriggerStay(Collider other)
     {
         // shows the interaction button
@@ -89,13 +94,16 @@ public class PlayerInteractions : MonoBehaviour
         }
     }
 
+
     // hides the interaction button
     private void OnTriggerExit(Collider other)
     {
         interactIcon.SetActive(false);
         isInteracting = false;
         couldInteract = false;
+        canEnterDoor = true;
     }
+
 
     // automatically teleports the player if they walk through a door
     private void OnCollisionStay(Collision other)
@@ -109,6 +117,8 @@ public class PlayerInteractions : MonoBehaviour
         }
     }
 
+
+
     private void Interact(InputAction.CallbackContext context)
     {
         if (couldInteract)
@@ -117,6 +127,8 @@ public class PlayerInteractions : MonoBehaviour
         }
     }
 
+
+
     // this prevents accidentally spamming through doors
     private IEnumerator DoorCooldown()
     {
@@ -124,6 +136,8 @@ public class PlayerInteractions : MonoBehaviour
         yield return new WaitForSeconds(1);
         canEnterDoor = true;
     }
+
+
 
     // checks if logs should be send to the console
     private void Log(string message)

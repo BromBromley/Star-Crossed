@@ -9,6 +9,7 @@ public class UIManager : MonoBehaviour
 {
     // this script manages the UI elements in the main scene of the game
 
+    [SerializeField] private GameObject pauseScreen;
     [SerializeField] private GameObject fadeScreen;
     private Color transparentColor;
     private float fadeTime;
@@ -20,6 +21,8 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject taskButton;
     private InteractableManager _interactableManager;
     private APManager _apManager;
+
+
 
     void Start()
     {
@@ -35,6 +38,8 @@ public class UIManager : MonoBehaviour
         _interactableManager = FindObjectOfType<InteractableManager>();
         _apManager = FindObjectOfType<APManager>();
 
+        GameManager.onPausingGame += ShowPauseScreen;
+        GameManager.onContinuingGame += HidePauseScreen;
         GameManager.onContinuingGame += HideTextbox;
         GameManager.onNewDay += UpdateDay;
 
@@ -42,6 +47,19 @@ public class UIManager : MonoBehaviour
 
         AssignDescriptions();
     }
+
+
+    void OnDisable()
+    {
+        GameManager.onPausingGame -= ShowPauseScreen;
+        GameManager.onContinuingGame -= HidePauseScreen;
+        GameManager.onContinuingGame -= HideTextbox;
+        GameManager.onNewDay -= UpdateDay;
+
+        TaskManager.onStartingTask -= ShowTaskText;
+    }
+
+
 
     private void AssignDescriptions()
     {
@@ -53,10 +71,13 @@ public class UIManager : MonoBehaviour
         taskDescription[5] = "plant";
     }
 
+
+
     private void FadeToBlack()
     {
         StartCoroutine(FadeOutAndIn());
     }
+
 
     // fades the screen to black by changing the color of the fade screen
     private IEnumerator FadeOutAndIn()
@@ -83,6 +104,21 @@ public class UIManager : MonoBehaviour
         fadeScreen.transform.SetAsFirstSibling();
     }
 
+
+
+    private void ShowPauseScreen()
+    {
+        pauseScreen.SetActive(true);
+    }
+
+
+    private void HidePauseScreen()
+    {
+        pauseScreen.SetActive(false);
+    }
+
+
+
     private void ShowTextbox(bool isTask)
     {
         textbox.SetActive(true);
@@ -97,16 +133,19 @@ public class UIManager : MonoBehaviour
         }
     }
 
+
     private void HideTextbox()
     {
         textbox.SetActive(false);
     }
+
 
     private void ShowTaskText(int task)
     {
         textbox.GetComponentInChildren<TextMeshProUGUI>().text = "You're interacting with " + taskDescription[task] + ". Come back later to play the minigame.";
         taskButton.SetActive(true);
     }
+
 
     private void EndTask()
     {
@@ -121,6 +160,8 @@ public class UIManager : MonoBehaviour
             textbox.GetComponentInChildren<TextMeshProUGUI>().text = "You don't have enough AP for that right now. Go to bed.";
         }
     }
+
+
 
     // this updates the HUD's day counter
     private void UpdateDay(int day)

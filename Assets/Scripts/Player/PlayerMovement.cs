@@ -14,7 +14,7 @@ public class PlayerMovement : MonoBehaviour
     private UnityEngine.Vector3 lastMovement;
     private float speed = 0;
     private float maxSpeed = 8f;
-    private float acceleration = 16f;
+    private float acceleration = 10f;
     private float stoppingForce = 30f;
 
     // public bool playerIsFloating;
